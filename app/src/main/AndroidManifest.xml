@@ -25,71 +25,7 @@
     </application>
 
 </manifest>
-<!--    ```-->
 
-<!--    -&#45;&#45;-->
-
-<!--    ## 🎯 Step 17: Final Sync and Build-->
-
-<!--    1. Click **"File"** → **"Sync Project with Gradle Files"**-->
-<!--    2. Wait for sync to complete-->
-<!--    3. Click **"Build"** → **"Clean Project"**-->
-<!--    4. Click **"Build"** → **"Rebuild Project"**-->
-
-<!--    -&#45;&#45;-->
-
-<!--    ## 🚀 Step 18: Run the App!-->
-
-<!--    1. Select your emulator or device-->
-<!--    2. Click **Run** ▶️ or press `Shift + F10`-->
-
-<!--    -&#45;&#45;-->
-
-<!--    ## 🎉 What You Should See:-->
-
-<!--    ### **Home Tab (Initially):**-->
-<!--    - ❌ **OFF DUTY** toggle (Red)-->
-<!--    - Button: "Go ON Duty"-->
-<!--    - No active orders-->
-
-<!--    ### **When you click "Go ON Duty":**-->
-<!--    - ✅ Toggle turns **GREEN**-->
-<!--    - After 3 seconds, a **NEW ORDER popup** appears with:-->
-<!--    - Order details (Order ID, Customer, Pickup, Delivery, Amount)-->
-<!--    - **Accept** button (green)-->
-<!--    - **Reject** button (red)-->
-
-<!--    ### **When you click "Accept":**-->
-<!--    - Order added to **Active Orders list**-->
-<!--    - Automatically **switches to Status Tab**-->
-<!--    - Shows order journey with 3 buttons:-->
-<!--    1. **Mark Arrived at Pickup** (Blue)-->
-<!--    2. **Mark Order Picked** (Yellow) - appears after step 1-->
-<!--    3. **Mark Delivered** (Green) - appears after step 2-->
-
-<!--    ### **When you complete all steps:**-->
-<!--    - Order is removed from active list-->
-<!--    - Returns to Home Tab-->
-<!--    - Ready for next order-->
-
-<!--    -&#45;&#45;-->
-
-<!--    ## 🔄 Testing Multi-Order Flow:-->
-
-<!--    1. Accept first order (Order A)-->
-<!--    2. While on Status Tab tracking Order A-->
-<!--    3. Go back to **Home Tab**-->
-<!--    4. **Toggle OFF and back ON** to simulate another order-->
-<!--    5. Accept second order (Order B)-->
-<!--    6. Now on Status Tab, you'll see:-->
-<!--    - **Order switcher** at the top with both orders-->
-<!--    - Tap to switch between Order A and Order B-->
-<!--    - Continue tracking each independently-->
-
-<!--    -&#45;&#45;-->
-
-<!--    ## 📁 Complete Project Structure (What You've Built):-->
-<!--    ```-->
 <!--    com.rapido.captainapp/-->
 <!--    ├── CaptainApplication.kt       ✅ App entry point with Koin-->
 <!--    ├── CaptainApp.kt               ✅ Main composable with Tab Bar-->
