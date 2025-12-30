@@ -1,7 +1,7 @@
 package com.rapido.captainapp.domain.usecase
 
 import com.rapido.captainapp.domain.model.DutyStatus
-import com.rapido.captainapp.domain.repository.CaptainRepository
+import com.rapido.captainapp.data.repository.CaptainRepository
 
 class UpdateDutyStatusUseCase(
     private val captainRepository: CaptainRepository

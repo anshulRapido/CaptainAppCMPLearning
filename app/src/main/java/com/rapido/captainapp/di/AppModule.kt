@@ -1,14 +1,14 @@
 package com.rapido.captainapp.di
 
-import android.content.Context
 import com.rapido.captainapp.data.local.CaptainDatabase
 import com.rapido.captainapp.data.local.SharedPrefsManager
 import com.rapido.captainapp.data.repository.CaptainRepositoryImpl
 import com.rapido.captainapp.data.repository.OrderRepositoryImpl
-import com.rapido.captainapp.domain.repository.CaptainRepository
-import com.rapido.captainapp.domain.repository.OrderRepository
+import com.rapido.captainapp.data.repository.CaptainRepository
+import com.rapido.captainapp.data.repository.OrderRepository
 import com.rapido.captainapp.domain.usecase.AcceptOrderUseCase
 import com.rapido.captainapp.domain.usecase.RejectOrderUseCase
+import com.rapido.captainapp.domain.usecase.OrderUseCase
 import com.rapido.captainapp.domain.usecase.UpdateDutyStatusUseCase
 import com.rapido.captainapp.domain.usecase.UpdateOrderStatusUseCase
 import com.rapido.captainapp.presentation.home.HomeViewModel
@@ -34,6 +34,7 @@ val appModule = module {
     single { AcceptOrderUseCase(get()) }
     single { RejectOrderUseCase(get()) }
     single { UpdateOrderStatusUseCase(get()) }
+    single { OrderUseCase(get()) }
 
     // ViewModels
     viewModel {
@@ -41,8 +42,8 @@ val appModule = module {
             updateDutyStatusUseCase = get(),
             acceptOrderUseCase = get(),
             rejectOrderUseCase = get(),
-            orderRepository = get(),
-            captainRepository = get()
+            captainRepository = get(),
+            orderUseCase = get()
         )
     }
 

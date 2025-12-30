@@ -3,7 +3,6 @@ package com.rapido.captainapp.data.repository
 import com.rapido.captainapp.data.local.SharedPrefsManager
 import com.rapido.captainapp.domain.model.Captain
 import com.rapido.captainapp.domain.model.DutyStatus
-import com.rapido.captainapp.domain.repository.CaptainRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

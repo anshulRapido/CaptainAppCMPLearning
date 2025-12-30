@@ -2,12 +2,11 @@ package com.rapido.captainapp.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rapido.captainapp.data.repository.OrderRepositoryImpl
 import com.rapido.captainapp.domain.model.DutyStatus
-import com.rapido.captainapp.domain.repository.CaptainRepository
-import com.rapido.captainapp.domain.repository.OrderRepository
+import com.rapido.captainapp.data.repository.CaptainRepository
 import com.rapido.captainapp.domain.usecase.AcceptOrderUseCase
 import com.rapido.captainapp.domain.usecase.RejectOrderUseCase
+import com.rapido.captainapp.domain.usecase.OrderUseCase
 import com.rapido.captainapp.domain.usecase.UpdateDutyStatusUseCase
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
@@ -21,8 +20,8 @@ class HomeViewModel(
     private val updateDutyStatusUseCase: UpdateDutyStatusUseCase,
     private val acceptOrderUseCase: AcceptOrderUseCase,
     private val rejectOrderUseCase: RejectOrderUseCase,
-    private val orderRepository: OrderRepository,
-    private val captainRepository: CaptainRepository
+    private val captainRepository: CaptainRepository,
+    private val orderUseCase: OrderUseCase
 ) : ViewModel(), ContainerHost<HomeState, HomeSideEffect> {
 
     override val container: Container<HomeState, HomeSideEffect> = container(HomeState())
@@ -51,9 +50,9 @@ class HomeViewModel(
                 }
 
                 // DUMMY: Simulate incoming order when going on duty
-                if (status == DutyStatus.ON_DUTY && orderRepository is OrderRepositoryImpl) {
+                if (status == DutyStatus.ON_DUTY) {
                     viewModelScope.launch {
-                        orderRepository.simulateIncomingOrder()
+                        orderUseCase.invoke()
                     }
                 }
             }
@@ -62,7 +61,7 @@ class HomeViewModel(
 
     private fun observeActiveOrders() = intent {
         viewModelScope.launch {
-            orderRepository.getActiveOrders().collect { orders ->
+            orderUseCase.getActiveOrders().collect { orders ->
                 reduce {
                     state.copy(activeOrders = orders)
                 }
@@ -72,7 +71,7 @@ class HomeViewModel(
 
     private fun observePendingOrders() = intent {
         viewModelScope.launch {
-            orderRepository.getPendingOrder().collect { order ->
+            orderUseCase.getPendingOrder().collect { order ->
                 reduce {
                     state.copy(incomingOrder = order)
                 }
