@@ -20,7 +20,6 @@ class HomeViewModel(
     private val updateDutyStatusUseCase: UpdateDutyStatusUseCase,
     private val acceptOrderUseCase: AcceptOrderUseCase,
     private val rejectOrderUseCase: RejectOrderUseCase,
-    private val captainRepository: CaptainRepository,
     private val orderUseCase: OrderUseCase
 ) : ViewModel(), ContainerHost<HomeState, HomeSideEffect> {
 
@@ -44,7 +43,7 @@ class HomeViewModel(
 
     private fun observeDutyStatus() = intent {
         viewModelScope.launch {
-            captainRepository.getDutyStatus().collect { status ->
+            updateDutyStatusUseCase.getDutyStatus().collect { status ->
                 reduce {
                     state.copy(dutyStatus = status)
                 }
@@ -86,7 +85,7 @@ class HomeViewModel(
 
     private fun loadCaptainInfo() = intent {
         viewModelScope.launch {
-            val captain = captainRepository.getCaptain()
+            val captain = updateDutyStatusUseCase.getCapain()
             reduce {
                 state.copy(captainName = captain?.name ?: "Captain")
             }

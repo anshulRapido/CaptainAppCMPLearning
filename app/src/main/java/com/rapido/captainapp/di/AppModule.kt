@@ -42,7 +42,6 @@ val appModule = module {
             updateDutyStatusUseCase = get(),
             acceptOrderUseCase = get(),
             rejectOrderUseCase = get(),
-            captainRepository = get(),
             orderUseCase = get()
         )
     }
