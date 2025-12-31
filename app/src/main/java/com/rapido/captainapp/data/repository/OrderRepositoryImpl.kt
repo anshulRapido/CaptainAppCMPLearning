@@ -5,6 +5,7 @@ import com.rapido.captainapp.data.local.toDomain
 import com.rapido.captainapp.data.local.toEntity
 import com.rapido.captainapp.domain.model.Order
 import com.rapido.captainapp.domain.model.OrderStatus
+import com.rapido.captainapp.domain.usecase.OrderRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

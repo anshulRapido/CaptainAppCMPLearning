@@ -1,6 +1,5 @@
 package com.rapido.captainapp.domain.usecase
 
-import com.rapido.captainapp.data.repository.OrderRepository
 import com.rapido.captainapp.domain.model.Order
 import kotlinx.coroutines.flow.Flow
 

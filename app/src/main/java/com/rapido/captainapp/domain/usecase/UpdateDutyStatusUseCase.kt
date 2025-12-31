@@ -1,7 +1,5 @@
 package com.rapido.captainapp.domain.usecase
-
 import com.rapido.captainapp.domain.model.DutyStatus
-import com.rapido.captainapp.data.repository.CaptainRepository
 import com.rapido.captainapp.domain.model.Captain
 import kotlinx.coroutines.flow.Flow
 

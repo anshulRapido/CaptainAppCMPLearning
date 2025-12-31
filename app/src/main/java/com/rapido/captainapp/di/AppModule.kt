@@ -4,8 +4,8 @@ import com.rapido.captainapp.data.local.CaptainDatabase
 import com.rapido.captainapp.data.local.SharedPrefsManager
 import com.rapido.captainapp.data.repository.CaptainRepositoryImpl
 import com.rapido.captainapp.data.repository.OrderRepositoryImpl
-import com.rapido.captainapp.data.repository.CaptainRepository
-import com.rapido.captainapp.data.repository.OrderRepository
+import com.rapido.captainapp.domain.usecase.CaptainRepository
+import com.rapido.captainapp.domain.usecase.OrderRepository
 import com.rapido.captainapp.domain.usecase.AcceptOrderUseCase
 import com.rapido.captainapp.domain.usecase.RejectOrderUseCase
 import com.rapido.captainapp.domain.usecase.OrderUseCase

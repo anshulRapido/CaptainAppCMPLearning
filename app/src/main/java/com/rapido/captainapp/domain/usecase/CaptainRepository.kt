@@ -1,4 +1,4 @@
-package com.rapido.captainapp.data.repository
+package com.rapido.captainapp.domain.usecase
 
 import com.rapido.captainapp.domain.model.Captain
 import com.rapido.captainapp.domain.model.DutyStatus
