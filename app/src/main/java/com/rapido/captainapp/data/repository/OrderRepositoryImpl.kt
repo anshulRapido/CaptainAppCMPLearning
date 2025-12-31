@@ -5,7 +5,7 @@ import com.rapido.captainapp.data.local.toDomain
 import com.rapido.captainapp.data.local.toEntity
 import com.rapido.captainapp.domain.model.Order
 import com.rapido.captainapp.domain.model.OrderStatus
-import com.rapido.captainapp.domain.repository.OrderRepository
+import com.rapido.captainapp.domain.usecase.OrderRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -85,7 +85,7 @@ class OrderRepositoryImpl(
     }
 
     // DUMMY: Simulate incoming order (call this to test)
-    suspend fun simulateIncomingOrder() {
+    override suspend fun simulateIncomingOrder() {
         delay(3000) // Wait 3 seconds after going on duty
 
         val dummyOrder = createDummyOrder()

@@ -1,4 +1,4 @@
-package com.rapido.captainapp.domain.repository
+package com.rapido.captainapp.domain.usecase
 
 import com.rapido.captainapp.domain.model.Order
 import com.rapido.captainapp.domain.model.OrderStatus
@@ -22,4 +22,6 @@ interface OrderRepository {
 
     // Get pending order (incoming notification)
     fun getPendingOrder(): Flow<Order?>
+
+    suspend fun simulateIncomingOrder()
 }

@@ -3,7 +3,7 @@ package com.rapido.captainapp.presentation.status
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rapido.captainapp.domain.model.OrderStatus
-import com.rapido.captainapp.domain.repository.OrderRepository
+import com.rapido.captainapp.domain.usecase.OrderRepository
 import com.rapido.captainapp.domain.usecase.UpdateOrderStatusUseCase
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
