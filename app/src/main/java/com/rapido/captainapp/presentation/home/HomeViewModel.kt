@@ -3,7 +3,6 @@ package com.rapido.captainapp.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rapido.captainapp.domain.model.DutyStatus
-import com.rapido.captainapp.data.repository.CaptainRepository
 import com.rapido.captainapp.domain.usecase.AcceptOrderUseCase
 import com.rapido.captainapp.domain.usecase.RejectOrderUseCase
 import com.rapido.captainapp.domain.usecase.OrderUseCase
@@ -85,7 +84,7 @@ class HomeViewModel(
 
     private fun loadCaptainInfo() = intent {
         viewModelScope.launch {
-            val captain = updateDutyStatusUseCase.getCapain()
+            val captain = updateDutyStatusUseCase.getCaptain()
             reduce {
                 state.copy(captainName = captain?.name ?: "Captain")
             }

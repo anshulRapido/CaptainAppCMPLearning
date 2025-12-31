@@ -16,7 +16,7 @@ class UpdateDutyStatusUseCase(
         return captainRepository.getDutyStatus()
     }
 
-    suspend  fun getCapain(): Captain? {
+    suspend  fun getCaptain(): Captain? {
         return captainRepository.getCaptain()
     }
 }
