@@ -1,23 +1,27 @@
 package com.rapido.captainapp
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.rapido.captainapp.presentation.History.OrderHistory
+import com.rapido.captainapp.presentation.History.OrderHistoryViewModel
 import com.rapido.captainapp.presentation.home.HomeScreen
 import com.rapido.captainapp.presentation.home.HomeViewModel
 import com.rapido.captainapp.presentation.status.StatusScreen
 import com.rapido.captainapp.presentation.status.StatusViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.compose.viewModel
 
 @Composable
 fun CaptainApp() {
     // ViewModels - created once at app level, shared across tabs
     val homeViewModel: HomeViewModel = koinViewModel()
     val statusViewModel: StatusViewModel = koinViewModel()
-
+    val historyViewModel: OrderHistoryViewModel = koinViewModel()
     // Tab state
     var selectedTab by remember { mutableStateOf(0) }
     var currentOrderId by remember { mutableStateOf<String?>(null) }
@@ -44,6 +48,15 @@ fun CaptainApp() {
                     },
                     label = { Text("Status") }
                 )
+
+                NavigationBarItem(
+                    selected = selectedTab == 2,
+                    onClick = { selectedTab = 2 },
+                    icon = {
+                        Icon(Icons.Default.AccountBalanceWallet, contentDescription = "History")
+                    },
+                    label = { Text("History") }
+                )
             }
         }
     ) { paddingValues ->
@@ -62,6 +75,10 @@ fun CaptainApp() {
                 onNavigateBack = {
                     selectedTab = 0 // Switch back to Home tab
                 }
+            )
+
+            2 -> OrderHistory(
+                viewModel = historyViewModel
             )
         }
     }

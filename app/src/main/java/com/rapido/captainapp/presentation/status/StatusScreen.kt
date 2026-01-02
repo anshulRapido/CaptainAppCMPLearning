@@ -86,7 +86,6 @@ fun StatusScreen(
                         viewModel.handleIntent(StatusIntent.SwitchOrder(order.id))
                     }
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
             }
 

@@ -24,4 +24,6 @@ interface OrderRepository {
     fun getPendingOrder(): Flow<Order?>
 
     suspend fun simulateIncomingOrder()
+
+    suspend  fun getPastOrders(): Flow<List<Order>>
 }

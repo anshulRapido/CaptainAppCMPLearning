@@ -1,15 +1,19 @@
 package com.rapido.captainapp.data.repository
 
+import android.util.Log
 import com.rapido.captainapp.data.local.OrderDao
 import com.rapido.captainapp.data.local.toDomain
 import com.rapido.captainapp.data.local.toEntity
 import com.rapido.captainapp.domain.model.Order
 import com.rapido.captainapp.domain.model.OrderStatus
 import com.rapido.captainapp.domain.usecase.OrderRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class OrderRepositoryImpl(
     private val orderDao: OrderDao
@@ -18,6 +22,14 @@ class OrderRepositoryImpl(
     // For dummy pending order (simulating Firebase notifications)
     private val _pendingOrder = MutableStateFlow<Order?>(null)
 
+    init {
+      val respositoryScope = CoroutineScope(Dispatchers.Main)
+        respositoryScope.launch {
+            _pendingOrder?.collect {  order ->
+                Log.d("OrderDebug", "Pending order value changed: ${order?.id ?: "null"}")
+            }
+        }
+    }
     override fun getActiveOrders(): Flow<List<Order>> {
         return orderDao.getActiveOrders().map { entities ->
             entities.map { it.toDomain() }
@@ -71,7 +83,7 @@ class OrderRepositoryImpl(
             // If delivered, remove from active orders after a delay
             if (status == OrderStatus.DELIVERED) {
                 delay(1000)
-                orderDao.deleteOrder(orderId)
+               // orderDao.deleteOrder(orderId)
             }
 
             Result.success(updatedEntity.toDomain())
@@ -92,6 +104,12 @@ class OrderRepositoryImpl(
         _pendingOrder.value = dummyOrder
     }
 
+    override suspend  fun getPastOrders(): Flow<List<Order>> {
+        return orderDao.getPastOrders()
+                    .map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
     private fun createDummyOrder(): Order {
         val orderNumber = (1000..9999).random()
         return Order(

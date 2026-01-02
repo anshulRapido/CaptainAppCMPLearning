@@ -7,10 +7,12 @@ import com.rapido.captainapp.data.repository.OrderRepositoryImpl
 import com.rapido.captainapp.domain.usecase.CaptainRepository
 import com.rapido.captainapp.domain.usecase.OrderRepository
 import com.rapido.captainapp.domain.usecase.AcceptOrderUseCase
+import com.rapido.captainapp.domain.usecase.OrderHistoryUseCase
 import com.rapido.captainapp.domain.usecase.RejectOrderUseCase
 import com.rapido.captainapp.domain.usecase.OrderUseCase
 import com.rapido.captainapp.domain.usecase.UpdateDutyStatusUseCase
 import com.rapido.captainapp.domain.usecase.UpdateOrderStatusUseCase
+import com.rapido.captainapp.presentation.History.OrderHistoryViewModel
 import com.rapido.captainapp.presentation.home.HomeViewModel
 import com.rapido.captainapp.presentation.status.StatusViewModel
 import org.koin.android.ext.koin.androidContext
@@ -26,15 +28,16 @@ val appModule = module {
     single { SharedPrefsManager(androidContext()) }
 
     // Repositories
-    single<OrderRepository> { OrderRepositoryImpl(get()) }
-    single<CaptainRepository> { CaptainRepositoryImpl(get()) }
+    factory<OrderRepository> { OrderRepositoryImpl(get()) }
+    factory<CaptainRepository> { CaptainRepositoryImpl(get()) }
 
     // Use Cases
-    single { UpdateDutyStatusUseCase(get()) }
-    single { AcceptOrderUseCase(get()) }
-    single { RejectOrderUseCase(get()) }
-    single { UpdateOrderStatusUseCase(get()) }
-    single { OrderUseCase(get()) }
+    factory { UpdateDutyStatusUseCase(get()) }
+    factory { AcceptOrderUseCase(get()) }
+    factory { RejectOrderUseCase(get()) }
+    factory { UpdateOrderStatusUseCase(get()) }
+    factory { OrderUseCase(get()) }
+    factory { OrderHistoryUseCase(get()) }
 
     // ViewModels
     viewModel {
@@ -48,8 +51,14 @@ val appModule = module {
 
     viewModel {
         StatusViewModel(
-            updateOrderStatusUseCase = get(),
-            orderRepository = get()
+            updateOrderStatusUseCase = get()
+        )
+    }
+
+
+    viewModel {
+        OrderHistoryViewModel(
+            useCase =  get()
         )
     }
 }
