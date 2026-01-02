@@ -28,8 +28,8 @@ val appModule = module {
     single { SharedPrefsManager(androidContext()) }
 
     // Repositories
-    factory<OrderRepository> { OrderRepositoryImpl(get()) }
-    factory<CaptainRepository> { CaptainRepositoryImpl(get()) }
+    single<OrderRepository> { OrderRepositoryImpl(get()) }
+    single<CaptainRepository> { CaptainRepositoryImpl(get()) }
 
     // Use Cases
     factory { UpdateDutyStatusUseCase(get()) }
