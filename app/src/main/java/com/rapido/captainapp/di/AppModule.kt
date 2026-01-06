@@ -30,11 +30,11 @@ val appModule = module {
     single<CaptainRepository> { CaptainRepositoryImpl(get()) }
 
     // Use Cases
-    single { UpdateDutyStatusUseCase(get()) }
-    single { AcceptOrderUseCase(get()) }
-    single { RejectOrderUseCase(get()) }
-    single { UpdateOrderStatusUseCase(get()) }
-    single { OrderUseCase(get()) }
+    factory { UpdateDutyStatusUseCase(get()) }
+    factory { AcceptOrderUseCase(get()) }
+    factory { RejectOrderUseCase(get()) }
+    factory { UpdateOrderStatusUseCase(get()) }
+    factory { OrderUseCase(get()) }
 
     // ViewModels
     viewModel {
