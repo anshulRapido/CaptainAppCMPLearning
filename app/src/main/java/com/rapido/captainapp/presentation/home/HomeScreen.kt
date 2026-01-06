@@ -367,14 +367,14 @@ fun IncomingOrderPopup(
                     }
                 }
 
-                Text(
-                    text = "⏱️ 15 seconds to respond",
-                    fontSize = 12.sp,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp)
-                )
+//                Text(
+//                    text = "⏱️ 15 seconds to respond",
+//                    fontSize = 12.sp,
+//                    color = Color.Red,
+//                    modifier = Modifier
+//                        .align(Alignment.CenterHorizontally)
+//                        .padding(top = 8.dp)
+//                )
             }
         }
     }

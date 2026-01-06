@@ -83,3 +83,23 @@ fun CaptainApp() {
         }
     }
 }
+
+
+//Need overlay / center content → Box (ZStack)
+//
+//Need background + shape → Surface
+//
+//Need material card UI → Card
+
+
+//Scaffold = predefined screen layout structure
+//
+//It gives you slots for common screen parts:
+//
+//top bar
+//
+//bottom bar
+//
+//floating action button
+//
+//content (body)

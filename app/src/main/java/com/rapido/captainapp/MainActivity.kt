@@ -25,3 +25,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+//It sets rootVC in terms of UIKit
+// SwiftUI: your App { WindowGroup { ContentView() } }

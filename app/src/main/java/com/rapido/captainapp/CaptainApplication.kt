@@ -17,3 +17,10 @@ class CaptainApplication : Application() {
         }
     }
 }
+//Relate with app Delegate
+
+//onCreate() (main one) -> viewDidLoad
+//
+//onStart() -> viewWillAppear
+//
+//onResume() -> viewDidAppear
