@@ -194,6 +194,7 @@ fun ActiveOrdersSection(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
+            .padding(bottom = 80.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)

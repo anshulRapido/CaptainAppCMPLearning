@@ -234,6 +234,7 @@ fun OrderStatusCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
+            .padding(bottom = 80.dp)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -423,23 +424,23 @@ fun OrderStatusProgress(currentStatus: OrderStatus) {
                     }
                 )
             }
-
+            Spacer(Modifier.height(24.dp))
             // Connecting line
-            if (index < steps.size - 1) {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 15.dp)
-                        .width(2.dp)
-                        .height(24.dp)
-                        .background(
-                            if (isCompleted) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                Color.LightGray
-                            }
-                        )
-                )
-            }
+//            if (index < steps.size - 1) {
+//                Box(
+//                    modifier = Modifier
+//                        .padding(start = 15.dp)
+//                        .width(2.dp)
+//                        .height(24.dp)
+//                        .background(
+//                            if (isCompleted) {
+//                                MaterialTheme.colorScheme.primary
+//                            } else {
+//                                Color.LightGray
+//                            }
+//                        )
+//                )
+//            }
         }
     }
 }
