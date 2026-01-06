@@ -14,10 +14,14 @@ abstract class CaptainDatabase : RoomDatabase() {
     abstract fun orderDao(): OrderDao
 
     companion object {
+//        Thread-safe visibility across threads
+//        instance to hold single instance
+//        context.applicationContext -> survives activity lifecycle
         @Volatile
         private var INSTANCE: CaptainDatabase? = null
 
         fun getDatabase(context: Context): CaptainDatabase {
+//          synchronized(this) Thread safe block only one thread enters at a time
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

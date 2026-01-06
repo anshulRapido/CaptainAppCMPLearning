@@ -36,6 +36,9 @@ fun StatusScreen(
     val state by viewModel.collectAsState()
 
     // Load order if orderId provided
+    //    Lifecycle aware coroutine in compose
+    //    Auto-cancels when Composable leaves composition
+    //    When screen opens → load order, if order Id Changes reload
     LaunchedEffect(orderId) {
         orderId?.let {
             viewModel.handleIntent(StatusIntent.LoadOrder(it))
@@ -135,7 +138,6 @@ fun MultiOrderSwitcher(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.heightIn(max = 150.dp)
@@ -258,38 +260,54 @@ fun OrderStatusCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Customer Info
+            LazyColumn {
+                item {
+                    // Customer Info
+                    customerInfo(order)
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Divider()
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Status Progress
+                    orderStatusView(order, isUpdating, onMarkArrived, onMarkPicked, onMarkFinished)
+                }
+            }
+        }
+    }
+}
+@Composable
+fun customerInfo(order: Order) {
             InfoRow(
                 icon = Icons.Default.Person,
                 label = "Customer",
                 value = order.customerName
             )
-
             InfoRow(
                 icon = Icons.Default.Place,
                 label = "Pickup",
                 value = order.pickupAddress
             )
-
             InfoRow(
                 icon = Icons.Default.Home,
                 label = "Delivery",
                 value = order.deliveryAddress
             )
-
             InfoRow(
                 icon = Icons.Default.LocationOn,
                 label = "Distance",
                 value = order.distance
             )
+}
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Divider()
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Status Progress
+@Composable
+fun orderStatusView(order: Order,
+                    isUpdating: Boolean,
+                    onMarkArrived: () -> Unit,
+                    onMarkPicked: () -> Unit,
+                    onMarkFinished: () -> Unit) {
             OrderStatusProgress(currentStatus = order.status)
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -302,10 +320,7 @@ fun OrderStatusCard(
                 onMarkPicked = onMarkPicked,
                 onMarkFinished = onMarkFinished
             )
-        }
-    }
 }
-
 @Composable
 fun InfoRow(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
