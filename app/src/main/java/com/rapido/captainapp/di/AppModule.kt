@@ -37,7 +37,10 @@ val appModule = module {
     factory { RejectOrderUseCase(get()) }
     factory { UpdateOrderStatusUseCase(get()) }
     factory { OrderUseCase(get()) }
+<<<<<<< HEAD
     factory { OrderHistoryUseCase(get()) }
+=======
+>>>>>>> 1e5cf50 (Made usecases factory)
 
     // ViewModels
     viewModel {
