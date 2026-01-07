@@ -1,6 +1,9 @@
 package com.rapido.captainapp.data.repository
 
 import android.util.Log
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.rapido.captainapp.data.local.OrderDao
 import com.rapido.captainapp.data.local.toDomain
 import com.rapido.captainapp.data.local.toEntity
@@ -21,20 +24,74 @@ class OrderRepositoryImpl(
 
     // For dummy pending order (simulating Firebase notifications)
     private val _pendingOrder = MutableStateFlow<Order?>(null)
+    private val firebaseStore = FirebaseFirestore.getInstance()
+    private val orderCollection = firebaseStore.collection("orders")
 
     init {
-      val respositoryScope = CoroutineScope(Dispatchers.Main)
-        respositoryScope.launch {
-            _pendingOrder?.collect {  order ->
-                Log.d("OrderDebug", "Pending order value changed: ${order?.id ?: "null"}")
-            }
-        }
+
+
     }
+
     override fun getActiveOrders(): Flow<List<Order>> {
         return orderDao.getActiveOrders().map { entities ->
             entities.map { it.toDomain() }
         }
     }
+
+    private fun writeDummyOnDB() {
+        val dummyOrder = createDummyOrder()
+
+    }
+
+
+    private fun listenToOrderDB() {
+        orderCollection.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e("OrderDebug", "Error listening to orders: $error")
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                // compelete this
+                val orders = snapshot.documents.mapNotNull { doc ->
+                    try {
+                        // Assuming your Order has a companion object or function to parse from Firestore
+                        val id = doc.getString("id") ?: doc.id
+                        val pickupAddress = doc.getString("pickupAddress") ?: ""
+                        val deliveryAddress = doc.getString("deliveryAddress") ?: ""
+                        val customerName = doc.getString("customerName") ?: ""
+                        val amount = doc.getDouble("amount") ?: 0.0
+                        val distance = doc.getString("distance") ?: ""
+                        val status = doc.getString("status")?.let { OrderStatus.valueOf(it) } ?: OrderStatus.ASSIGNED
+
+                        Order(
+                            id = id,
+                            pickupAddress = pickupAddress,
+                            deliveryAddress = deliveryAddress,
+                            customerName = customerName,
+                            amount = amount,
+                            distance = distance,
+                            status = status
+                        )
+
+                    } catch (e: Exception) {
+                        Log.e("OrderDebug", "Error parsing order: ${e.message}")
+                        null
+                    }
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    writeToDB(orders)
+                }
+            }
+        }
+    }
+
+        suspend fun writeToDB(orders: List<Order>)  {
+            orders.forEach { order ->
+                val orderEntity = order.toEntity()
+                orderDao.insertOrder(orderEntity)
+            }
+        }
 
     override suspend fun getOrderById(orderId: String): Order? {
         return orderDao.getOrderById(orderId)?.toDomain()
