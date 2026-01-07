@@ -28,8 +28,7 @@ class OrderRepositoryImpl(
     private val orderCollection = firebaseStore.collection("orders")
 
     init {
-
-
+      // writeDummyOnDB()
     }
 
     override fun getActiveOrders(): Flow<List<Order>> {
@@ -40,8 +39,29 @@ class OrderRepositoryImpl(
 
     private fun writeDummyOnDB() {
         val dummyOrder = createDummyOrder()
+        orderCollection.document(dummyOrder.id)
+            .set(dummyOrder)
+    }
+
+    //private fun deleteActiveOrderFromFireStore(
+   //     order: Order
+//    ) {
+//        orderCollection.document("DC")
+//            .delete()
+//            .addOnSuccessListener {
+//                // Log or handle the success (e.g., show a Toast)
+//               // Log.d(TAG, "DocumentSnapshot successfully deleted!")
+//            }
+//            .addOnFailureListener { e ->
+//                // Log or handle the error
+//                Log.w(TAG, "Error deleting document", e)
+//            }
+//    }
+
+    private fun updateStateOrderFromFireStore() {
 
     }
+
 
 
     private fun listenToOrderDB() {
@@ -78,13 +98,14 @@ class OrderRepositoryImpl(
                         null
                     }
                 }
-
+                _pendingOrder.value = orders.firstOrNull()
                 CoroutineScope(Dispatchers.IO).launch {
-                    writeToDB(orders)
+                    //writeToDB(orders)
                 }
             }
         }
     }
+
 
         suspend fun writeToDB(orders: List<Order>)  {
             orders.forEach { order ->
@@ -154,12 +175,12 @@ class OrderRepositoryImpl(
     }
 
     // DUMMY: Simulate incoming order (call this to test)
-    override suspend fun simulateIncomingOrder() {
-        delay(3000) // Wait 3 seconds after going on duty
-
-        val dummyOrder = createDummyOrder()
-        _pendingOrder.value = dummyOrder
-    }
+//    override suspend fun simulateIncomingOrder() {
+//        delay(3000) // Wait 3 seconds after going on duty
+//
+//        val dummyOrder = createDummyOrder()
+//        _pendingOrder.value = dummyOrder
+//    }
 
     override suspend  fun getPastOrders(): Flow<List<Order>> {
         return orderDao.getPastOrders()
