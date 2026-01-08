@@ -1,9 +1,8 @@
 package com.rapido.captainapp.data.repository
 
+import android.content.ContentValues.TAG
 import android.util.Log
-import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import com.rapido.captainapp.data.local.OrderDao
 import com.rapido.captainapp.data.local.toDomain
 import com.rapido.captainapp.data.local.toEntity
@@ -29,6 +28,7 @@ class OrderRepositoryImpl(
 
     init {
       // writeDummyOnDB()
+        listenToOrderFirestoreDatabase()
     }
 
     override fun getActiveOrders(): Flow<List<Order>> {
@@ -43,28 +43,22 @@ class OrderRepositoryImpl(
             .set(dummyOrder)
     }
 
-    //private fun deleteActiveOrderFromFireStore(
-   //     order: Order
-//    ) {
-//        orderCollection.document("DC")
-//            .delete()
-//            .addOnSuccessListener {
-//                // Log or handle the success (e.g., show a Toast)
-//               // Log.d(TAG, "DocumentSnapshot successfully deleted!")
-//            }
-//            .addOnFailureListener { e ->
-//                // Log or handle the error
-//                Log.w(TAG, "Error deleting document", e)
-//            }
-//    }
-
-    private fun updateStateOrderFromFireStore() {
-
+    private fun deleteActiveOrderFromFireStore(
+        order: Order
+    ) {
+        orderCollection.document(order.id)
+            .delete()
+            .addOnSuccessListener {
+                // Log or handle the success (e.g., show a Toast)
+                Log.d(TAG, "DocumentSnapshot successfully deleted!")
+            }
+            .addOnFailureListener { e ->
+                // Log or handle the error
+                Log.w(TAG, "Error deleting document", e)
+            }
     }
 
-
-
-    private fun listenToOrderDB() {
+    private fun listenToOrderFirestoreDatabase() {
         orderCollection.addSnapshotListener { snapshot, error ->
             if (error != null) {
                 Log.e("OrderDebug", "Error listening to orders: $error")
@@ -99,20 +93,16 @@ class OrderRepositoryImpl(
                     }
                 }
                 _pendingOrder.value = orders.firstOrNull()
-                CoroutineScope(Dispatchers.IO).launch {
-                    //writeToDB(orders)
-                }
             }
         }
     }
 
-
-        suspend fun writeToDB(orders: List<Order>)  {
+    suspend fun writeToDB(orders: List<Order>)  {
             orders.forEach { order ->
                 val orderEntity = order.toEntity()
                 orderDao.insertOrder(orderEntity)
             }
-        }
+    }
 
     override suspend fun getOrderById(orderId: String): Order? {
         return orderDao.getOrderById(orderId)?.toDomain()
@@ -129,7 +119,9 @@ class OrderRepositoryImpl(
             // Save to local database
             orderDao.insertOrder(order.toEntity())
 
-            // Clear pending order
+            // delete from remote
+            deleteActiveOrderFromFireStore(order)
+            // Clear local val
             _pendingOrder.value = null
 
             Result.success(order)
