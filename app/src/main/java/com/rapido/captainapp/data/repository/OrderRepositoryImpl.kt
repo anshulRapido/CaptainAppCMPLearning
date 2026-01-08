@@ -53,11 +53,14 @@ class OrderRepositoryImpl(
             .set(dummyOrder)
     }
 
-    private fun deleteActiveOrderFromFireStore(
+    private fun updateStateOfActiveOrderToFromFireStore(
         order: Order
     ) {
+        val updatefieldMap = HashMap<String, Any>()
+        updatefieldMap["status"] = order.status
+
         orderCollection.document(order.id)
-            .delete()
+            .update(updatefieldMap)
             .addOnSuccessListener {
                 // Log or handle the success (e.g., show a Toast)
                 Log.d(TAG, "DocumentSnapshot successfully deleted!")
@@ -123,14 +126,14 @@ class OrderRepositoryImpl(
             // Simulate API delay
             delay(500)
 
-            val order = _pendingOrder.value?.copy(status = OrderStatus.ASSIGNED)
+            val order = _pendingOrder.value?.copy(status = OrderStatus.ARRIVED)
                 ?: throw Exception("No pending order")
 
             // Save to local database
             orderDao.insertOrder(order.toEntity())
 
             // delete from remote
-            deleteActiveOrderFromFireStore(order)
+            updateStateOfActiveOrderToFromFireStore(order)
             // Clear local val
             _pendingOrder.value = null
 
