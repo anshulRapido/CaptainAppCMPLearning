@@ -28,8 +28,8 @@ class OrderRepositoryImpl(
     private val orderCollection = firebaseStore.collection("orders")
 
     init {
-      // writeDummyOnDB()
-        listenToOrderFirestoreDatabase()
+       //writeDummyOnDB()
+       listenToOrderFirestoreDatabase()
     }
 
     init {
@@ -183,12 +183,12 @@ class OrderRepositoryImpl(
 //        _pendingOrder.value = dummyOrder
 //    }
 
-    override suspend  fun getPastOrders(): Flow<List<Order>> {
-        return orderDao.getPastOrders()
-                    .map { entities ->
-            entities.map { it.toDomain() }
-        }
-    }
+//    override suspend  fun getPastOrders(): Flow<List<Order>> {
+//        return orderDao.getPastOrders()
+//                    .map { entities ->
+//            entities.map { it.toDomain() }
+//        }
+//    }
 
     override suspend  fun getPastOrders(): Flow<List<Order>> {
         return orderDao.getPastOrders()
