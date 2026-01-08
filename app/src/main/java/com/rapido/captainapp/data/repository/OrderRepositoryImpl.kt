@@ -53,7 +53,7 @@ class OrderRepositoryImpl(
             .set(dummyOrder)
     }
 
-    private fun updateStateOfActiveOrderToFromFireStore(
+    private fun updateStateOfActiveOrderToInFireStore(
         order: Order
     ) {
         val updatefieldMap = HashMap<String, Any>()
@@ -133,7 +133,7 @@ class OrderRepositoryImpl(
             orderDao.insertOrder(order.toEntity())
 
             // delete from remote
-            updateStateOfActiveOrderToFromFireStore(order)
+            updateStateOfActiveOrderToInFireStore(order)
             // Clear local val
             _pendingOrder.value = null
 
@@ -160,6 +160,9 @@ class OrderRepositoryImpl(
             val orderEntity = orderDao.getOrderById(orderId)
                 ?: throw Exception("Order not found")
 
+            updateStateOfActiveOrderToInFireStore(
+                orderEntity.toDomain().copy(status = status)
+            )
             val updatedEntity = orderEntity.copy(status = status.name)
             orderDao.updateOrder(updatedEntity)
 
