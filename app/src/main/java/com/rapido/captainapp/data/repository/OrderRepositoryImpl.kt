@@ -175,21 +175,6 @@ class OrderRepositoryImpl(
         return _pendingOrder
     }
 
-    // DUMMY: Simulate incoming order (call this to test)
-//    override suspend fun simulateIncomingOrder() {
-//        delay(3000) // Wait 3 seconds after going on duty
-//
-//        val dummyOrder = createDummyOrder()
-//        _pendingOrder.value = dummyOrder
-//    }
-
-//    override suspend  fun getPastOrders(): Flow<List<Order>> {
-//        return orderDao.getPastOrders()
-//                    .map { entities ->
-//            entities.map { it.toDomain() }
-//        }
-//    }
-
     override suspend  fun getPastOrders(): Flow<List<Order>> {
         return orderDao.getPastOrders()
                     .map { entities ->
