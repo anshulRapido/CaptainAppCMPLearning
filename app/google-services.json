@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "988383599372",
+    "project_id": "captaincmplearning",
+    "storage_bucket": "captaincmplearning.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988383599372:android:fd16a4f058fcc8b3af4729",
+        "android_client_info": {
+          "package_name": "com.rapido.captainapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGK-GaphIkrv2eNARXvK2KCka6DeziBrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

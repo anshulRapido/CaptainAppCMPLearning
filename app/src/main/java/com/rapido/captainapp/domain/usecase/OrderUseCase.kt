@@ -7,7 +7,7 @@ class OrderUseCase(
     private val orderRepository: OrderRepository
 ) {
     suspend operator fun invoke() {
-        orderRepository.simulateIncomingOrder()
+
     }
 
     fun getActiveOrders(): Flow<List<Order>> {

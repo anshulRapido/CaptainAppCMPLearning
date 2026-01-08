@@ -23,5 +23,5 @@ interface OrderRepository {
     // Get pending order (incoming notification)
     fun getPendingOrder(): Flow<Order?>
 
-    suspend fun simulateIncomingOrder()
+    suspend  fun getPastOrders(): Flow<List<Order>>
 }

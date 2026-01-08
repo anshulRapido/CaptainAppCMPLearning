@@ -8,6 +8,9 @@ interface OrderDao {
     @Query("SELECT * FROM orders WHERE status != 'DELIVERED' ORDER BY timestamp DESC")
     fun getActiveOrders(): Flow<List<OrderEntity>>
 
+    @Query("SELECT * FROM orders ORDER BY timestamp DESC")
+    fun getPastOrders(): Flow<List<OrderEntity>>
+
     @Query("SELECT * FROM orders WHERE id = :orderId")
     suspend fun getOrderById(orderId: String): OrderEntity?
 
@@ -17,9 +20,7 @@ interface OrderDao {
     @Update
     suspend fun updateOrder(order: OrderEntity)
 
-    @Query("DELETE FROM orders WHERE id = :orderId")
-    suspend fun deleteOrder(orderId: String)
+//    @Query("DELETE FROM orders WHERE id = :orderId")
+//    suspend fun deleteOrder(orderId: String)
 
-    @Query("DELETE FROM orders")
-    suspend fun deleteAllOrders()
 }

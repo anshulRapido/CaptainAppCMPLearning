@@ -1,15 +1,22 @@
 package com.rapido.captainapp.data.repository
 
+import android.content.ContentValues.TAG
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.rapido.captainapp.data.local.OrderDao
 import com.rapido.captainapp.data.local.toDomain
 import com.rapido.captainapp.data.local.toEntity
 import com.rapido.captainapp.domain.model.Order
 import com.rapido.captainapp.domain.model.OrderStatus
 import com.rapido.captainapp.domain.usecase.OrderRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+
 
 
 class OrderRepositoryImpl(
@@ -18,11 +25,93 @@ class OrderRepositoryImpl(
 
     // For dummy pending order (simulating Firebase notifications)
     private val _pendingOrder = MutableStateFlow<Order?>(null)
+    private val firebaseStore = FirebaseFirestore.getInstance()
+    private val orderCollection = firebaseStore.collection("orders")
 
+    init {
+       //writeDummyOnDB()
+       listenToOrderFirestoreDatabase()
+    }
+
+    init {
+      val respositoryScope = CoroutineScope(Dispatchers.Main)
+        respositoryScope.launch {
+            _pendingOrder?.collect {  order ->
+                Log.d("OrderDebug", "Pending order value changed: ${order?.id ?: "null"}")
+            }
+        }
+    }
     override fun getActiveOrders(): Flow<List<Order>> {
         return orderDao.getActiveOrders().map { entities ->
             entities.map { it.toDomain() }
         }
+    }
+
+    private fun writeDummyOnDB() {
+        val dummyOrder = createDummyOrder()
+        orderCollection.document(dummyOrder.id)
+            .set(dummyOrder)
+    }
+
+    private fun deleteActiveOrderFromFireStore(
+        order: Order
+    ) {
+        orderCollection.document(order.id)
+            .delete()
+            .addOnSuccessListener {
+                // Log or handle the success (e.g., show a Toast)
+                Log.d(TAG, "DocumentSnapshot successfully deleted!")
+            }
+            .addOnFailureListener { e ->
+                // Log or handle the error
+                Log.w(TAG, "Error deleting document", e)
+            }
+    }
+
+    private fun listenToOrderFirestoreDatabase() {
+        orderCollection.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e("OrderDebug", "Error listening to orders: $error")
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                // compelete this
+                val orders = snapshot.documents.mapNotNull { doc ->
+                    try {
+                        // Assuming your Order has a companion object or function to parse from Firestore
+                        val id = doc.getString("id") ?: doc.id
+                        val pickupAddress = doc.getString("pickupAddress") ?: ""
+                        val deliveryAddress = doc.getString("deliveryAddress") ?: ""
+                        val customerName = doc.getString("customerName") ?: ""
+                        val amount = doc.getDouble("amount") ?: 0.0
+                        val distance = doc.getString("distance") ?: ""
+                        val status = doc.getString("status")?.let { OrderStatus.valueOf(it) } ?: OrderStatus.ASSIGNED
+
+                        Order(
+                            id = id,
+                            pickupAddress = pickupAddress,
+                            deliveryAddress = deliveryAddress,
+                            customerName = customerName,
+                            amount = amount,
+                            distance = distance,
+                            status = status
+                        )
+
+                    } catch (e: Exception) {
+                        Log.e("OrderDebug", "Error parsing order: ${e.message}")
+                        null
+                    }
+                }
+                _pendingOrder.value = orders.firstOrNull()
+            }
+        }
+    }
+
+    suspend fun writeToDB(orders: List<Order>)  {
+            orders.forEach { order ->
+                val orderEntity = order.toEntity()
+                orderDao.insertOrder(orderEntity)
+            }
     }
 
     override suspend fun getOrderById(orderId: String): Order? {
@@ -40,7 +129,9 @@ class OrderRepositoryImpl(
             // Save to local database
             orderDao.insertOrder(order.toEntity())
 
-            // Clear pending order
+            // delete from remote
+            deleteActiveOrderFromFireStore(order)
+            // Clear local val
             _pendingOrder.value = null
 
             Result.success(order)
@@ -72,7 +163,7 @@ class OrderRepositoryImpl(
             // If delivered, remove from active orders after a delay
             if (status == OrderStatus.DELIVERED) {
                 delay(1000)
-                orderDao.deleteOrder(orderId)
+               // orderDao.deleteOrder(orderId)
             }
 
             Result.success(updatedEntity.toDomain())
@@ -85,14 +176,12 @@ class OrderRepositoryImpl(
         return _pendingOrder
     }
 
-    // DUMMY: Simulate incoming order (call this to test)
-    override suspend fun simulateIncomingOrder() {
-        delay(3000) // Wait 3 seconds after going on duty
-
-        val dummyOrder = createDummyOrder()
-        _pendingOrder.value = dummyOrder
+    override suspend  fun getPastOrders(): Flow<List<Order>> {
+        return orderDao.getPastOrders()
+                    .map { entities ->
+            entities.map { it.toDomain() }
+        }
     }
-
     private fun createDummyOrder(): Order {
         val orderNumber = (1000..9999).random()
         return Order(

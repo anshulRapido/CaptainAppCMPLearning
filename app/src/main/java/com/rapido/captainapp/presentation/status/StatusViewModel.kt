@@ -15,7 +15,6 @@ import org.orbitmvi.orbit.viewmodel.container
 
 class StatusViewModel(
     private val updateOrderStatusUseCase: UpdateOrderStatusUseCase,
-    private val orderRepository: OrderRepository
 ) : ViewModel(), ContainerHost<StatusState, StatusSideEffect> {
 
     override val container: Container<StatusState, StatusSideEffect> = container(StatusState())
@@ -36,7 +35,7 @@ class StatusViewModel(
 
     private fun observeActiveOrders() = intent {
         viewModelScope.launch {
-            orderRepository.getActiveOrders().collect { orders ->
+            updateOrderStatusUseCase.getActiveOrders().collect { orders ->
                 reduce {
                     state.copy(
                         allActiveOrders = orders,
@@ -50,7 +49,7 @@ class StatusViewModel(
 
     private fun loadOrder(orderId: String) = intent {
         viewModelScope.launch {
-            val order = orderRepository.getOrderById(orderId)
+            val order = updateOrderStatusUseCase.getOrderById(orderId)
             reduce {
                 state.copy(currentOrder = order)
             }
@@ -134,7 +133,7 @@ class StatusViewModel(
 
     private fun switchOrder(orderId: String) = intent {
         viewModelScope.launch {
-            val order = orderRepository.getOrderById(orderId)
+            val order = updateOrderStatusUseCase.getOrderById(orderId)
             reduce {
                 state.copy(currentOrder = order)
             }
