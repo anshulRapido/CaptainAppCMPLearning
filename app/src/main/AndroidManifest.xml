@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:name=".CaptainApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CaptainApp"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.CaptainApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+<!--    com.rapido.captainapp/-->
+<!--    ├── CaptainApplication.kt       ✅ App entry point with Koin-->
+<!--    ├── CaptainApp.kt               ✅ Main composable with Tab Bar-->
+<!--    ├── MainActivity.kt             ✅ Activity-->
+<!--    │-->
+<!--    ├── data/-->
+<!--    │   ├── local/-->
+<!--    │   │   ├── CaptainDatabase.kt  ✅ Room database-->
+<!--    │   │   ├── OrderDao.kt         ✅ Database queries-->
+<!--    │   │   ├── OrderEntity.kt      ✅ Database entity-->
+<!--    │   │   └── SharedPrefsManager.kt ✅ Preferences-->
+<!--    │   └── repository/-->
+<!--    │       ├── OrderRepositoryImpl.kt      ✅ With DUMMY data-->
+<!--    │       └── CaptainRepositoryImpl.kt    ✅ With SharedPrefs-->
+<!--    │-->
+<!--    ├── domain/-->
+<!--    │   ├── model/-->
+<!--    │   │   ├── Order.kt            ✅ Business model-->
+<!--    │   │   ├── OrderStatus.kt      ✅ Enum-->
+<!--    │   │   ├── Captain.kt          ✅ Business model-->
+<!--    │   │   └── DutyStatus.kt       ✅ Enum-->
+<!--    │   ├── repository/-->
+<!--    │   │   ├── OrderRepository.kt       ✅ Interface-->
+<!--    │   │   └── CaptainRepository.kt     ✅ Interface-->
+<!--    │   └── usecase/-->
+<!--    │       ├── UpdateDutyStatusUseCase.kt   ✅-->
+<!--    │       ├── AcceptOrderUseCase.kt        ✅-->
+<!--    │       ├── RejectOrderUseCase.kt        ✅-->
+<!--    │       └── UpdateOrderStatusUseCase.kt  ✅-->
+<!--    │-->
+<!--    ├── presentation/-->
+<!--    │   ├── home/-->
+<!--    │   │   ├── HomeIntent.kt       ✅ User actions-->
+<!--    │   │   ├── HomeState.kt        ✅ UI state-->
+<!--    │   │   ├── HomeSideEffect.kt   ✅ One-time events-->
+<!--    │   │   ├── HomeViewModel.kt    ✅ Orbit MVI ViewModel-->
+<!--    │   │   └── HomeScreen.kt       ✅ Compose UI-->
+<!--    │   └── status/-->
+<!--    │       ├── StatusIntent.kt     ✅-->
+<!--    │       ├── StatusState.kt      ✅-->
+<!--    │       ├── StatusSideEffect.kt ✅-->
+<!--    │       ├── StatusViewModel.kt  ✅-->
+<!--    │       └── StatusScreen.kt     ✅-->
+<!--    │-->
+<!--    ├── di/-->
+<!--    │   └── AppModule.kt            ✅ Koin DI setup-->
+<!--    │-->
+<!--    └── ui/-->
+<!--    └── theme/-->
+<!--    ├── Color.kt            ✅-->
+<!--    ├── Theme.kt            ✅-->
+<!--    └── Type.kt             ✅-->
