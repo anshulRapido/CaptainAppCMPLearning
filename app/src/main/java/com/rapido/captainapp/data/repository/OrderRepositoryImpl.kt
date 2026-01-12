@@ -105,7 +105,7 @@ class OrderRepositoryImpl(
                         null
                     }
                 }
-                _pendingOrder.value = orders.firstOrNull()
+                _pendingOrder.value = orders.firstOrNull { it.status == OrderStatus.ASSIGNED }
             }
         }
     }
