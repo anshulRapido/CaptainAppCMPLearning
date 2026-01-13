@@ -5,6 +5,8 @@ sealed class HomeIntent {
     data class AcceptOrder(val orderId: String) : HomeIntent()
     data class RejectOrder(val orderId: String) : HomeIntent()
     data class NavigateToStatus(val orderId: String) : HomeIntent()
+    data class ShowOrderDialog(val show: Boolean) : HomeIntent()
+
 }
 
 //all subclasses are known at compile time and must be declared in the same file.

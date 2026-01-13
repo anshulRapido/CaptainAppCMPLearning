@@ -33,17 +33,19 @@ class OrderRepositoryImpl(
        listenToOrderFirestoreDatabase()
     }
 
-    init {
-      val respositoryScope = CoroutineScope(Dispatchers.Main)
-        respositoryScope.launch {
-            _pendingOrder?.collect {  order ->
-                Log.d("OrderDebug", "Pending order value changed: ${order?.id ?: "null"}")
-            }
-        }
-    }
+//    init {
+//      val respositoryScope = CoroutineScope(Dispatchers.Main)
+//        respositoryScope.launch {
+//            _pendingOrder?.collect {  order ->
+//                Log.d("OrderDebug", "Pending order value changed: ${order?.id ?: "null"}")
+//            }
+//        }
+//    }
     override fun getActiveOrders(): Flow<List<Order>> {
         return orderDao.getActiveOrders().map { entities ->
-            entities.map { it.toDomain() }
+            entities
+                .map { it.toDomain() }
+                .filter { it.status != OrderStatus.DELIVERED }
         }
     }
 
@@ -105,7 +107,7 @@ class OrderRepositoryImpl(
                         null
                     }
                 }
-                _pendingOrder.value = orders.firstOrNull()
+                _pendingOrder.value = orders.firstOrNull { it.status == OrderStatus.ASSIGNED }
             }
         }
     }

@@ -8,5 +8,6 @@ data class HomeState(
     val activeOrders: List<Order> = emptyList(),
     val incomingOrder: Order? = null,
     val isLoading: Boolean = false,
-    val captainName: String = "Captain"
+    val captainName: String = "Captain",
+    val showOrderDialog: Boolean = false
 )
