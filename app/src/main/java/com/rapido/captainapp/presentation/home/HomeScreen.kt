@@ -25,8 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rapido.captainapp.MainActivity
 import com.rapido.captainapp.domain.model.DutyStatus
 import com.rapido.captainapp.domain.model.Order
+import com.rapido.captainapp.service.OrderListenerService
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -38,8 +40,16 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.collectAsState()
-
-    // Collect side effects
+    LaunchedEffect(Unit) {
+        (context as? MainActivity)?.let { activity ->
+            val intent = activity.intent
+            if (intent.getBooleanExtra(OrderListenerService.EXTRA_SHOW_ORDER_DIALOG, false)) {
+                viewModel.handleIntent(HomeIntent.ShowOrderDialog(true))
+                // Clear the flag
+                intent.removeExtra(OrderListenerService.EXTRA_SHOW_ORDER_DIALOG)
+            }
+        }
+    }
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeSideEffect.ShowToast -> {
@@ -51,12 +61,30 @@ fun HomeScreen(
             is HomeSideEffect.NavigateToStatusTab -> {
                 onNavigateToStatus(sideEffect.orderId)
             }
+            is HomeSideEffect.StartOrderListenerService -> {
+                OrderListenerService.start(context)
+            }
+            is HomeSideEffect.StopOrderListenerService -> {
+                OrderListenerService.stop(context)
+            }
             is HomeSideEffect.ShowError -> {
                 Toast.makeText(context, "Error: ${sideEffect.error}", Toast.LENGTH_LONG).show()
             }
         }
     }
 
+    if (state.showOrderDialog && state.incomingOrder != null) {
+        IncomingOrderPopup(
+            order = state.incomingOrder!!,
+            isLoading = state.isLoading,
+            onAccept = {
+                viewModel.handleIntent(HomeIntent.AcceptOrder(state.incomingOrder!!.id))
+            },
+            onReject = {
+                viewModel.handleIntent(HomeIntent.RejectOrder(state.incomingOrder!!.id))
+            }
+        )
+    }
     Scaffold(
         topBar = {
             TopAppBar(

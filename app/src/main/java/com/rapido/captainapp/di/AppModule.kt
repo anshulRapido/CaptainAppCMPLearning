@@ -23,7 +23,6 @@ val appModule = module {
     // Database
     single { CaptainDatabase.getDatabase(androidContext()) }
     single { get<CaptainDatabase>().orderDao() }
-
     // SharedPreferences
     single { SharedPrefsManager(androidContext()) }
 

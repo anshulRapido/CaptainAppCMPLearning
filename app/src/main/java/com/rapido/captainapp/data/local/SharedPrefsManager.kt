@@ -14,6 +14,7 @@ class SharedPrefsManager(context: Context) {
         private const val KEY_DUTY_STATUS = "duty_status"
         private const val KEY_CAPTAIN_ID = "captain_id"
         private const val KEY_CAPTAIN_NAME = "captain_name"
+        private const val KEY_SERVICE_RUNNING = "key_service_running"
     }
 
     fun saveDutyStatus(status: DutyStatus) {
@@ -39,5 +40,13 @@ class SharedPrefsManager(context: Context) {
 
     fun getCaptainName(): String {
         return prefs.getString(KEY_CAPTAIN_NAME, "Captain") ?: "Captain"
+    }
+
+    fun saveServiceRunning(isRunning: Boolean) {
+        prefs.edit().putBoolean(KEY_SERVICE_RUNNING, isRunning).apply()
+    }
+
+    fun isServiceRunning(): Boolean {
+        return prefs.getBoolean(KEY_SERVICE_RUNNING, false)
     }
 }

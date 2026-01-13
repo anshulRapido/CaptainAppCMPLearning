@@ -107,28 +107,45 @@ class StatusViewModel(
             state.copy(isUpdating = true)
         }
 
-        updateOrderStatusUseCase(orderId, OrderStatus.DELIVERED)
-            .onSuccess {
-                reduce {
-                    state.copy(
-                        isUpdating = false,
-                        currentOrder = null
-                    )
-                }
-                postSideEffect(StatusSideEffect.ShowSuccess("Order delivered! 🎉"))
-                postSideEffect(StatusSideEffect.OrderCompleted)
+        viewModelScope.launch {  // ✅ Added
+            updateOrderStatusUseCase(orderId, OrderStatus.DELIVERED)
+                .onSuccess {
+                    // ✅ Calculate remaining orders (excluding just-delivered one)
+                    val remainingOrders = state.allActiveOrders.filter { it.id != orderId && it.status != OrderStatus.DELIVERED }
 
-                // If no more orders, navigate back to home
-                if (state.allActiveOrders.isEmpty()) {
-                    postSideEffect(StatusSideEffect.NavigateBackToHome)
+                    if (remainingOrders.isEmpty()) {  // ✅ Changed logic
+                        // No more active orders - navigate back to home
+                        reduce {
+                            state.copy(
+                                isUpdating = false,
+                                currentOrder = null,
+                                allActiveOrders = emptyList()  // ✅ Clear list
+                            )
+                        }
+                        postSideEffect(StatusSideEffect.ShowSuccess("Order delivered! 🎉"))
+                        postSideEffect(StatusSideEffect.OrderCompleted)
+                        postSideEffect(StatusSideEffect.NavigateBackToHome)
+                    } else {
+                        // ✅ NEW: There are more orders - switch to next one
+                        val nextOrder = remainingOrders.firstOrNull()
+                        reduce {
+                            state.copy(
+                                isUpdating = false,
+                                currentOrder = nextOrder,  // ✅ Set next order
+                                allActiveOrders = remainingOrders  // ✅ Update list
+                            )
+                        }
+                        postSideEffect(StatusSideEffect.ShowSuccess("Order delivered! 🎉 Showing next order..."))
+                        postSideEffect(StatusSideEffect.OrderCompleted)
+                    }
                 }
-            }
-            .onFailure { error ->
-                reduce {
-                    state.copy(isUpdating = false)
+                .onFailure { error ->
+                    reduce {
+                        state.copy(isUpdating = false)
+                    }
+                    postSideEffect(StatusSideEffect.ShowError(error.message ?: "Failed to complete order"))
                 }
-                postSideEffect(StatusSideEffect.ShowError(error.message ?: "Failed to complete order"))
-            }
+        }
     }
 
     private fun switchOrder(orderId: String) = intent {

@@ -29,14 +29,21 @@ class HomeViewModel(
         observeActiveOrders()
         observePendingOrders()
         loadCaptainInfo()
+        startServiceIfCaptainIsOnDuty()
     }
 
+    fun startServiceIfCaptainIsOnDuty() = intent {
+        if (container.stateFlow.value.dutyStatus == DutyStatus.ON_DUTY) {
+            postSideEffect(HomeSideEffect.StartOrderListenerService)
+        }
+    }
     fun handleIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.ToggleDuty -> toggleDuty()
             is HomeIntent.AcceptOrder -> acceptOrder(intent.orderId)
             is HomeIntent.RejectOrder -> rejectOrder(intent.orderId)
             is HomeIntent.NavigateToStatus -> navigateToStatus(intent.orderId)
+            is HomeIntent.ShowOrderDialog -> showOrderDialog(intent.show)  // ✅ Add this
         }
     }
 
@@ -67,11 +74,18 @@ class HomeViewModel(
         }
     }
 
+    private fun showOrderDialog(show: Boolean) = intent {
+        reduce {
+            state.copy(showOrderDialog = show)
+        }
+    }
+
     private fun observePendingOrders() = intent {
         viewModelScope.launch {
             orderUseCase.getPendingOrder().collect { order ->
                 reduce {
-                    state.copy(incomingOrder = order)
+                    state.copy(incomingOrder = order,
+                        showOrderDialog = order != null)
                 }
 
                 // Play sound when new order arrives
@@ -109,8 +123,10 @@ class HomeViewModel(
                 }
 
                 val message = if (newStatus == DutyStatus.ON_DUTY) {
+                    postSideEffect(HomeSideEffect.StartOrderListenerService)
                     "You are now ON DUTY 🟢"
                 } else {
+                    postSideEffect(HomeSideEffect.StopOrderListenerService)
                     "You are now OFF DUTY 🔴"
                 }
                 postSideEffect(HomeSideEffect.ShowToast(message))
@@ -133,7 +149,8 @@ class HomeViewModel(
                 reduce {
                     state.copy(
                         isLoading = false,
-                        incomingOrder = null
+                        incomingOrder = null,
+                        showOrderDialog = false
                     )
                 }
 
@@ -152,7 +169,8 @@ class HomeViewModel(
         rejectOrderUseCase(orderId)
             .onSuccess {
                 reduce {
-                    state.copy(incomingOrder = null)
+                    state.copy(incomingOrder = null,
+                        showOrderDialog = false)
                 }
                 postSideEffect(HomeSideEffect.ShowToast("Order rejected"))
             }
